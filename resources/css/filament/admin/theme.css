@@ -1,0 +1,228 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+
+
+/* ═══════ Charte Ambre / Rouge ═══════ */
+:root {
+    --brand-amber: #E79724;
+    --brand-red: #D9250A;
+    --brand-amber-dark: #B8761A;
+    --brand-red-dark: #A81C07;
+    --brand-amber-light: #F2C179;
+    --brand-red-light: #F08A78;
+    --brand-gradient: linear-gradient(to right, var(--brand-amber) 0%, var(--brand-red) 75%);
+
+    accent-color: var(--brand-amber);
+    scrollbar-color: color-mix(in srgb, var(--brand-amber) 65%, transparent) transparent;
+}
+
+::selection {
+    background: color-mix(in srgb, var(--brand-amber) 35%, transparent);
+}
+
+/* ── Boutons principaux : dégradé, lueur rouge, état pressé foncé ── */
+.fi-btn.fi-color-primary:not(.fi-outlined):not(.fi-btn-outlined) {
+    background-image: var(--brand-gradient) !important;
+    color: #fff !important;
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.18);
+    box-shadow: 0 6px 16px -8px color-mix(in srgb, var(--brand-red) 60%, transparent);
+}
+.fi-btn.fi-color-primary:not(.fi-outlined):not(.fi-btn-outlined):hover {
+    filter: brightness(1.06);
+}
+.fi-btn.fi-color-primary:not(.fi-outlined):not(.fi-btn-outlined):active {
+    background-image: linear-gradient(to right, var(--brand-amber-dark), var(--brand-red-dark) 75%) !important;
+}
+
+/* ── Item actif de la sidebar et onglets ── */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-tabs-item.fi-active {
+    background-image: var(--brand-gradient) !important;
+    box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--brand-red) 70%, transparent);
+}
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn *,
+.fi-tabs-item.fi-active,
+.fi-tabs-item.fi-active * {
+    color: #fff !important;
+}
+
+/* ── Sidebar : halo ambré en bas, titres de groupes colorés ── */
+.fi-sidebar {
+    background-image: linear-gradient(
+        to bottom,
+        transparent 55%,
+        color-mix(in srgb, var(--brand-amber) 8%, transparent) 100%
+    );
+}
+.fi-sidebar-group-label {
+    color: var(--brand-amber-dark);
+}
+.dark .fi-sidebar-group-label {
+    color: var(--brand-amber-light);
+}
+
+/* ── Barre du haut : liseré dégradé en bas ── */
+.fi-topbar {
+    background-image: var(--brand-gradient);
+    background-size: 100% 2px;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+/* ── Titre de page en dégradé ── */
+.fi-header-heading {
+    width: fit-content;
+    background-image: linear-gradient(100deg, var(--brand-amber-dark), var(--brand-red));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.dark .fi-header-heading {
+    background-image: linear-gradient(100deg, var(--brand-amber-light), var(--brand-red-light));
+}
+
+/* ── Tableau : filet dégradé en haut (respecte les coins arrondis) ── */
+.fi-ta-ctn {
+    background-image: var(--brand-gradient);
+    background-size: 100% 3px;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+/* ── En-tête du tableau : voile Ambre → Rouge ── */
+.fi-ta-table thead tr {
+    background-image: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--brand-amber) 12%, transparent),
+        color-mix(in srgb, var(--brand-red) 6%, transparent)
+    );
+}
+
+/* ── Survol d'une ligne : traînée ambrée qui s'estompe ── */
+.fi-ta-row:hover {
+    background-image: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--brand-amber) 10%, transparent),
+        transparent 70%
+    );
+}
+
+/* ── Badges ── */
+.fi-badge.fi-color-primary {
+    background-color: color-mix(in srgb, var(--brand-amber) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-amber) 40%, transparent);
+}
+.fi-badge.fi-color-danger {
+    background-color: color-mix(in srgb, var(--brand-red) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand-red) 35%, transparent);
+}
+
+/* ── Pagination : page active en dégradé ── */
+.fi-pagination-item.fi-active .fi-pagination-item-btn {
+    background-image: var(--brand-gradient) !important;
+    color: #fff !important;
+}
+
+
+/* ── Champs : halo ambré au focus ── */
+.fi-input-wrp:focus-within {
+    border-color: var(--brand-amber) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-amber) 25%, transparent) !important;
+}
+
+/* ── Toggle « Compte actif » : dégradé quand activé ── */
+.fi-toggle[aria-checked="true"] {
+    background-image: var(--brand-gradient) !important;
+}
+
+/* ── Cartes de formulaire : filet dégradé en haut (comme le tableau) ── */
+.fi-section {
+    background-image: var(--brand-gradient);
+    background-size: 100% 3px;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+/* ── Fenêtres modales (confirmation de suppression) ── */
+.fi-modal-window {
+    background-image: var(--brand-gradient);
+    background-size: 100% 3px;
+    background-repeat: no-repeat;
+    background-position: top;
+}
+
+/* ── Colonnes triables : flèche de tri ambrée ── */
+.fi-ta-header-cell-sort-icon {
+    color: var(--brand-amber-dark);
+}
+
+/* ── Page de connexion : halo ambre/rouge en fond ── */
+.fi-simple-layout {
+    background-image:
+        radial-gradient(60rem 30rem at 0% 0%, color-mix(in srgb, var(--brand-amber) 14%, transparent), transparent 60%),
+        radial-gradient(50rem 28rem at 100% 100%, color-mix(in srgb, var(--brand-red) 10%, transparent), transparent 60%);
+}
+
+
+
+/* ── Fond de page : halos ambre (haut droit) et rouge (bas gauche) ── */
+.fi-body {
+    background-image:
+        radial-gradient(48rem 24rem at 100% 0%, color-mix(in srgb, var(--brand-amber) 10%, transparent), transparent 70%),
+        radial-gradient(40rem 22rem at 0% 100%, color-mix(in srgb, var(--brand-red) 7%, transparent), transparent 70%);
+    background-attachment: fixed;
+}
+
+/* ── Cartes de stats : barre dégradée à gauche, ombre rouge au survol ── */
+.fi-wi-stats-overview-stat {
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+.fi-wi-stats-overview-stat::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background-image: linear-gradient(to bottom, var(--brand-amber), var(--brand-red));
+}
+.fi-wi-stats-overview-stat:hover {
+    box-shadow: 0 14px 28px -14px color-mix(in srgb, var(--brand-red) 45%, transparent);
+}
+/* .fi-wi-stats-overview-stat-label {
+    color: var(--brand-amber-dark);
+} */
+.fi-wi-stats-overview-stat-value {
+    width: fit-content;
+    background-image: linear-gradient(100deg, var(--brand-amber-dark), var(--brand-red));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+/* .dark .fi-wi-stats-overview-stat-label {
+    color: var(--brand-amber-light);
+} */
+.dark .fi-wi-stats-overview-stat-value {
+    background-image: linear-gradient(100deg, var(--brand-amber-light), var(--brand-red-light));
+}
+
+/* ── Avatar : anneau ambré ── */
+.fi-avatar {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, var(--brand-amber) 70%, transparent);
+}
+
+/* ── Titres des cartes : noir, comme le titre « Administration des billets électroniques » ── */
+.fi-wi-stats-overview-stat-label {
+    color: var(--gray-950);
+}
+.dark .fi-wi-stats-overview-stat-label {
+    color: var(--gray-100);
+}
+
+.fi-wi-stats-overview-stat-description:not([class*="fi-color"]) {
+    color: var(--gray-700);
+}
