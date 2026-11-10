@@ -13,17 +13,20 @@ class ProfilWidget extends BaseWidget
     protected static ?int $sort = 0;
 
     protected int|string|array $columnSpan = 'full';
+
     protected ?string $pollingInterval = null;
 
     public static function canView(): bool
     {
-        return VentesAnalytics::role(auth()->user()) !== null;
+        $user = auth()->user();
+
+        return VentesAnalytics::role($user) !== null || (bool) $user?->isServiceClient();
     }
 
     protected function getStats(): array
     {
         $user = auth()->user();
-        $role = VentesAnalytics::role($user);
+        $role = $user->isServiceClient() ? 'service_client' : VentesAnalytics::role($user);
         $profil = $user->profilStaff();
 
         $fonction = collect([$profil['role'], $profil['compagnie'], $profil['gare'], $profil['ville']])
@@ -35,14 +38,20 @@ class ProfilWidget extends BaseWidget
             ->descriptionIcon('heroicon-m-user-circle')
             ->color('primary');
 
+        $maGare = fn () => Stat::make('Ma gare', $profil['gare'] ?? 'Aucune gare assignée')
+            ->description(collect([$profil['compagnie'], $profil['ville']])->filter()->implode(' · '))
+            ->color($profil['gare'] ? 'gray' : 'danger');
+
         $perimetre = match ($role) {
             'super_admin' => Stat::make('Périmètre', 'Toutes les compagnies')
-                ->description(Compagnie::count() . ' compagnies · ' . Gare::count() . ' gares'),
+                ->description(Compagnie::count().' compagnies · '.Gare::count().' gares'),
             'admin_compagnie' => Stat::make('Compagnie', $profil['compagnie'] ?? '—')
                 ->description($profil['ville'] ? "Ville : {$profil['ville']}" : 'Toutes les villes du réseau'),
-            default => Stat::make('Ma gare', $profil['gare'] ?? 'Aucune gare assignée')
-                ->description(collect([$profil['compagnie'], $profil['ville']])->filter()->implode(' · '))
-                ->color($profil['gare'] ? 'gray' : 'danger'),
+            'service_client' => $user->isServiceClientGlobal()
+                ? Stat::make('Périmètre', 'Toutes les demandes d\'assistance')
+                    ->description('Réponses aux clients de l\'application')
+                : $maGare(),
+            default => $maGare(),
         };
 
         return [$identite, $perimetre];

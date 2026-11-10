@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\RouteTransports;
 
 use App\Filament\Concerns\ScopedToCompagnie;
-use App\Filament\Resources\RouteTransports\Pages;
 use App\Models\Gare;
 use App\Models\RouteTransport;
+use App\Models\Ville;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -21,8 +21,11 @@ class RouteTransportResource extends Resource
     use ScopedToCompagnie;
 
     protected static ?string $model = RouteTransport::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
+
     protected static ?string $navigationLabel = 'Routes';
+
     protected static string|UnitEnum|null $navigationGroup = 'Transport';
 
     protected static function droits(): array
@@ -92,9 +95,19 @@ class RouteTransportResource extends Resource
             Forms\Components\Select::make('ville_arrivee_id')
                 ->label('Ville d\'arrivée')
                 ->relationship('villeArrivee', 'nom')
+                ->getOptionLabelFromRecordUsing(fn (Ville $ville) => $ville->etranger
+                    ? "{$ville->nom} ({$ville->pays}) — étranger"
+                    : $ville->nom)
                 ->required()
                 ->searchable(),
             Forms\Components\TextInput::make('prix')->numeric()->required()->suffix('FCFA'),
+            Forms\Components\TextInput::make('distance_km')
+                ->label('Distance')
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(5000)
+                ->suffix('km')
+                ->helperText('De la gare de départ à la ville d\'arrivée. Sert au contrôle de gestion (sièges-km, carburant standard).'),
             Forms\Components\TextInput::make('duree_max')->placeholder('ex: 5h30'),
             Forms\Components\Toggle::make('actif')->default(true),
             Forms\Components\Repeater::make('horaires')
@@ -109,18 +122,34 @@ class RouteTransportResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            Tables\Columns\TextColumn::make('compagnie.nom')
-                ->label('Compagnie')
-                ->visible(fn () => auth()->user()->isSuperAdmin()),
-            Tables\Columns\TextColumn::make('gareDepart.quartier')->label('Gare de départ'),
-            Tables\Columns\TextColumn::make('villeArrivee.nom')->label('Destination'),
-            Tables\Columns\TextColumn::make('prix')->money('XOF'),
-            Tables\Columns\IconColumn::make('actif')->boolean(),
-        ])->actions([
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
-        ]);
+        return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['compagnie', 'gareDepart.ville', 'villeArrivee']))
+            ->columns([
+                Tables\Columns\TextColumn::make('compagnie.nom')
+                    ->label('Compagnie')
+                    ->visible(fn () => auth()->user()->isSuperAdmin()),
+                Tables\Columns\TextColumn::make('gareDepart.quartier')->label('Gare de départ'),
+                Tables\Columns\TextColumn::make('villeArrivee.nom')->label('Destination'),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Type')
+                    ->badge()
+                    ->getStateUsing(fn (RouteTransport $record) => $record->estInternationale() ? 'Étranger' : 'National')
+                    ->color(fn (string $state) => $state === 'Étranger' ? 'warning' : 'gray'),
+                Tables\Columns\TextColumn::make('prix')->money('XOF'),
+                Tables\Columns\IconColumn::make('actif')->boolean(),
+            ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('type')
+                    ->label('Type')
+                    ->options(['national' => 'National', 'international' => 'Étranger'])
+                    ->query(fn (Builder $query, array $data) => filled($data['value'] ?? null)
+                        ? $query->duType($data['value'])
+                        : $query),
+            ])
+            ->actions([
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
+            ]);
     }
 
     public static function getPages(): array

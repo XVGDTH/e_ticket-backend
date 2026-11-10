@@ -3,13 +3,13 @@
 namespace App\Filament\Resources\Villes;
 
 use App\Filament\Concerns\ScopedToCompagnie;
-use App\Filament\Resources\Villes\Pages;
 use App\Models\Ville;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
@@ -19,8 +19,11 @@ class VilleResource extends Resource
     use ScopedToCompagnie;
 
     protected static ?string $model = Ville::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-map';
+
     protected static ?string $navigationLabel = 'Villes';
+
     protected static string|UnitEnum|null $navigationGroup = 'Transport';
 
     // Les villes sont communes à toutes les compagnies : réservées au super admin.
@@ -41,6 +44,11 @@ class VilleResource extends Resource
     {
         return $schema->components([
             Forms\Components\TextInput::make('nom')->required(),
+            Forms\Components\TextInput::make('pays')
+                ->required()
+                ->default('Burkina Faso')
+                ->datalist(['Burkina Faso', "Côte d'Ivoire", 'Ghana', 'Togo', 'Bénin', 'Niger', 'Mali'])
+                ->helperText('Tout pays autre que le Burkina Faso rend la ville « étrangère » : ses trajets sont alors internationaux.'),
             Forms\Components\TagsInput::make('aliases')
                 ->placeholder('ex: ouaga, waga')
                 ->helperText("Variantes d'écriture reconnues pour la recherche."),
@@ -51,7 +59,18 @@ class VilleResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('nom')->searchable(),
+            Tables\Columns\TextColumn::make('pays')->searchable(),
+            Tables\Columns\TextColumn::make('etranger')
+                ->label('Type')
+                ->badge()
+                ->formatStateUsing(fn ($state) => $state ? 'Étranger' : 'National')
+                ->color(fn ($state) => $state ? 'warning' : 'gray'),
             Tables\Columns\TextColumn::make('aliases')->badge()->separator(','),
+        ])->filters([
+            TernaryFilter::make('etranger')
+                ->label('Villes')
+                ->trueLabel('Étrangères')
+                ->falseLabel('Nationales'),
         ])->actions([
             Actions\EditAction::make(),
             Actions\DeleteAction::make(),

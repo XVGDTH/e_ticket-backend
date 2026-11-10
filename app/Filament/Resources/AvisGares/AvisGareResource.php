@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources\AvisGares;
 
-use App\Filament\Resources\AvisGares\Pages;
+use App\Filament\Concerns\ScopedToCompagnie;
 use App\Models\AvisGare;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
-use App\Filament\Concerns\ScopedToCompagnie;
-
 
 class AvisGareResource extends Resource
 {
+    use ScopedToCompagnie;
 
-  use ScopedToCompagnie;
     protected static ?string $model = AvisGare::class;
+
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-star';
+
     protected static ?string $navigationLabel = 'Avis voyageurs';
+
     protected static string|UnitEnum|null $navigationGroup = 'Activité';
 
     public static function table(Table $table): Table
@@ -27,6 +28,17 @@ class AvisGareResource extends Resource
             Tables\Columns\TextColumn::make('billet.reference')->label('Billet'),
             Tables\Columns\TextColumn::make('gare.quartier')->label('Gare'),
             Tables\Columns\TextColumn::make('gare.compagnie.nom')->label('Compagnie'),
+            Tables\Columns\TextColumn::make('note')
+                ->label('Note')
+                ->getStateUsing(function (AvisGare $record) {
+                    $scores = (array) $record->scores;
+
+                    // Chaque critère est noté de 0 à 2 : on ramène la moyenne sur 5.
+                    return $scores
+                        ? number_format(array_sum($scores) / (count($scores) * 2) * 5, 1).' / 5'
+                        : '—';
+                })
+                ->badge(),
             Tables\Columns\TextColumn::make('commentaire')->limit(50),
             Tables\Columns\TextColumn::make('created_at')->label('Date')->date('d/m/Y'),
         ])->defaultSort('created_at', 'desc');
@@ -39,8 +51,7 @@ class AvisGareResource extends Resource
         ];
     }
 
-
-        protected static function droits(): array
+    protected static function droits(): array
     {
         return [
             'super_admin' => ['voir'],
@@ -62,7 +73,8 @@ class AvisGareResource extends Resource
             ? $query->whereHas('gare', fn ($q) => $q->whereKey($gareId))
             : $query->whereRaw('1 = 0');
     }
-        protected static function scopeToVille(Builder $query, int $villeId): Builder
+
+    protected static function scopeToVille(Builder $query, int $villeId): Builder
     {
         return $query->whereHas('gare', fn ($g) => $g->where('ville_id', $villeId));
     }

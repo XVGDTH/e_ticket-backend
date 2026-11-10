@@ -2,21 +2,28 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\AppartientAUneCompagnie;
+use App\Models\Concerns\JournaliseParametres;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Concerns\AppartientAUneCompagnie;
 
 class Gare extends Model
 {
-    use HasFactory, AppartientAUneCompagnie;
-
+    use AppartientAUneCompagnie, HasFactory, JournaliseParametres;
 
     protected $fillable = [
         'compagnie_id', 'ville_id', 'quartier',
         'latitude', 'longitude', 'telephone', 'adresse',
     ];
+
+    protected function champsJournalises(): array
+    {
+        return [
+            'quota_app_pourcent' => 'Quota de l’application (%)',
+        ];
+    }
 
     public function compagnie(): BelongsTo
     {

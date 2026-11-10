@@ -134,6 +134,19 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-amber) 25%, transparent) !important;
 }
 
+/* ── Montants et quantités : chiffres lisibles et alignés ── */
+.fi-input-wrp input[type="number"] {
+    min-height: 2.75rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.fi-input-wrp input[type="number"]::placeholder {
+    font-weight: 400;
+}
+
 /* ── Toggle « Compte actif » : dégradé quand activé ── */
 .fi-toggle[aria-checked="true"] {
     background-image: var(--brand-gradient) !important;

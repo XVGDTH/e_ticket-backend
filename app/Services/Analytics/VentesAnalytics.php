@@ -27,9 +27,7 @@ class VentesAnalytics
 
     private const JOURS_ISO = ['lun' => 1, 'mar' => 2, 'mer' => 3, 'jeu' => 4, 'ven' => 5, 'sam' => 6, 'dim' => 7];
 
-    public function __construct(private User $user)
-    {
-    }
+    public function __construct(private User $user) {}
 
     public static function pour(User $user): self
     {
@@ -122,11 +120,11 @@ class VentesAnalytics
             default => now()->startOfMonth(),
         };
 
-        $debut = $courant->copy()->{'sub' . $pas . 's'}($n - 1);
+        $debut = $courant->copy()->{'sub'.$pas.'s'}($n - 1);
         $liste = [];
 
         for ($i = 0; $i < $n; $i++) {
-            $d = $debut->copy()->{'add' . $pas . 's'}($i);
+            $d = $debut->copy()->{'add'.$pas.'s'}($i);
             $liste[$d->format($cleFmt)] = $d->format($libFmt);
         }
 
@@ -150,7 +148,7 @@ class VentesAnalytics
 
         $lignes = $this->base()
             ->whereBetween($colDate, [$debut, now()])
-            ->selectRaw($this->groupeSql($g, $colDate) . " as p, $expression as v")
+            ->selectRaw($this->groupeSql($g, $colDate)." as p, $expression as v")
             ->groupByRaw('p')
             ->get()
             ->pluck('v', 'p');
@@ -172,7 +170,7 @@ class VentesAnalytics
 
         $nouveaux = DB::query()->fromSub($premiers, 't')
             ->whereBetween('t.premier', [$debut, now()])
-            ->selectRaw($this->groupeSql($g, 't.premier') . ' as p, COUNT(*) as v')
+            ->selectRaw($this->groupeSql($g, 't.premier').' as p, COUNT(*) as v')
             ->groupByRaw('p')
             ->get()
             ->pluck('v', 'p');
@@ -385,29 +383,102 @@ class VentesAnalytics
     }
 
     /** @return array{departs:int, voyageurs:int, capacite:int, taux:?float} */
+    // public function remplissage(Carbon $debut, Carbon $fin): array
+    // {
+    //     $places = (int) config('analytics.places_par_depart', 60);
+    //     $departs = $this->departsProgrammes($debut, $fin);
+    //     $voyageurs = (int) $this->base()
+    //         ->whereBetween('b.date_voyage', [$debut->toDateString(), $fin->toDateString()])
+    //         ->sum('b.travelers_count');
+    //     $capacite = $departs * $places;
+
+    //     return [
+    //         'departs' => $departs,
+    //         'voyageurs' => $voyageurs,
+    //         'capacite' => $capacite,
+    //         'taux' => $capacite > 0 ? round($voyageurs / $capacite * 100, 1) : null,
+    //     ];
+    // }
+
+    /** Taux de remplissage par route (30 derniers jours terminés). $mode : 'top' ou 'bas'. */
+    // public function remplissageParRoute(string $mode = 'top', int $jours = 30, int $limite = 10): array
+    // {
+    //     $debut = now()->subDays($jours)->startOfDay();
+    //     $fin = now()->subDay()->endOfDay();
+    //     $places = (int) config('analytics.places_par_depart', 60);
+    //     $departs = $this->departsParRoute($debut, $fin);
+
+    //     $voyageurs = $this->base()
+    //         ->whereBetween('b.date_voyage', [$debut->toDateString(), $fin->toDateString()])
+    //         ->selectRaw('r.id as route_id, SUM(b.travelers_count) as v')
+    //         ->groupBy('r.id')
+    //         ->get()
+    //         ->pluck('v', 'route_id');
+
+    //     $label = self::role($this->user) === 'super_admin'
+    //         ? "CONCAT(c.nom, ' · ', g.quartier, ' → ', COALESCE(vu.nom, '?'))"
+    //         : "CONCAT(g.quartier, ' → ', COALESCE(vu.nom, '?'))";
+
+    //     $lignes = $this->baseRoutes()
+    //         ->selectRaw("r.id, $label as label")
+    //         ->get()
+    //         ->map(function ($route) use ($departs, $voyageurs, $places) {
+    //             $capacite = ($departs[$route->id] ?? 0) * $places;
+
+    //             return [
+    //                 'label' => $route->label,
+    //                 'taux' => $capacite > 0 ? round(((float) ($voyageurs[$route->id] ?? 0)) / $capacite * 100, 1) : null,
+    //             ];
+    //         })
+    //         ->filter(fn ($l) => $l['taux'] !== null);
+
+    //     $lignes = ($mode === 'bas' ? $lignes->sortBy('taux') : $lignes->sortByDesc('taux'))->take($limite)->values();
+
+    //     return [$lignes->pluck('label')->all(), $lignes->pluck('taux')->all()];
+    // }
+    /** Places que l'application peut vendre sur un départ, pour chaque route du périmètre (route_id => places). */
+    private function placesAppParRoute(): array
+    {
+        return $this->baseRoutes()
+            ->get(['r.id', 'c.places_par_depart', 'c.quota_app_pourcent as quota_compagnie', 'g.quota_app_pourcent as quota_gare'])
+            ->mapWithKeys(function ($r) {
+                $places = (int) ($r->places_par_depart ?: config('analytics.places_par_depart', 60));
+                $quota = max(0, min(100, (int) ($r->quota_gare ?? $r->quota_compagnie ?? 100)));
+
+                return [$r->id => (int) floor($places * $quota / 100)];
+            })
+            ->all();
+    }
+
+    /** @return array{departs:int, voyageurs:int, capacite:int, taux:?float} */
     public function remplissage(Carbon $debut, Carbon $fin): array
     {
-        $places = (int) config('analytics.places_par_depart', 60);
-        $departs = $this->departsProgrammes($debut, $fin);
+        $departs = $this->departsParRoute($debut, $fin);
+        $places = $this->placesAppParRoute();
+
+        $capacite = 0;
+        foreach ($departs as $routeId => $n) {
+            $capacite += $n * ($places[$routeId] ?? 0);
+        }
+
         $voyageurs = (int) $this->base()
             ->whereBetween('b.date_voyage', [$debut->toDateString(), $fin->toDateString()])
             ->sum('b.travelers_count');
-        $capacite = $departs * $places;
 
         return [
-            'departs' => $departs,
+            'departs' => array_sum($departs),
             'voyageurs' => $voyageurs,
             'capacite' => $capacite,
             'taux' => $capacite > 0 ? round($voyageurs / $capacite * 100, 1) : null,
         ];
     }
 
-    /** Taux de remplissage par route (30 derniers jours terminés). $mode : 'top' ou 'bas'. */
+    /** Taux de remplissage du quota application, par route (30 derniers jours terminés). $mode : 'top' ou 'bas'. */
     public function remplissageParRoute(string $mode = 'top', int $jours = 30, int $limite = 10): array
     {
         $debut = now()->subDays($jours)->startOfDay();
         $fin = now()->subDay()->endOfDay();
-        $places = (int) config('analytics.places_par_depart', 60);
+        $places = $this->placesAppParRoute();
         $departs = $this->departsParRoute($debut, $fin);
 
         $voyageurs = $this->base()
@@ -425,7 +496,7 @@ class VentesAnalytics
             ->selectRaw("r.id, $label as label")
             ->get()
             ->map(function ($route) use ($departs, $voyageurs, $places) {
-                $capacite = ($departs[$route->id] ?? 0) * $places;
+                $capacite = ($departs[$route->id] ?? 0) * ($places[$route->id] ?? 0);
 
                 return [
                     'label' => $route->label,

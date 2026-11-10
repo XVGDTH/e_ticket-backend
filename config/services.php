@@ -35,12 +35,16 @@ return [
         ],
     ],
 
-        'whatsapp' => [
+    'whatsapp' => [
         'token' => env('WHATSAPP_TOKEN'),
-        'phone_id' => env('WHATSAPP_PHONE_ID'),
-        'template' => env('WHATSAPP_OTP_TEMPLATE'),
+        'phone_number_id' => env('WHATSAPP_PHONE_ID'),
+        'template' => env('WHATSAPP_OTP_TEMPLATE', 'kmaa_code_verification'),
         'langue' => env('WHATSAPP_LANGUE', 'fr'),
-        'version' => env('WHATSAPP_API_VERSION'), // une version actuellement supportée, voir la documentation Meta
+        'version' => env('WHATSAPP_API_VERSION', 'v25.0'),
+        'indicatif_pays' => '226',
+        'waba_id' => env('WHATSAPP_BUSINESS_ACCOUNT_ID'),
+        'app_secret' => env('WHATSAPP_APP_SECRET'),
+        'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
     ],
 
 ];

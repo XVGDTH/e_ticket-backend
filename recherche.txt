@@ -1,0 +1,281 @@
+﻿app\Filament\Concerns\ConditionneParModule.php:7: trait ConditionneParModule
+app\Filament\Concerns\ConditionneParModule.php:12: public static function moduleVisible(): bool
+app\Filament\Concerns\ConditionneParModule.php:14: return Modules::visiblePour(auth()->user(), static::moduleCle());
+app\Filament\Concerns\ScopedToCompagnie.php:25: $user->isAdminCompagnie() => 'admin_compagnie',
+app\Filament\Concerns\ScopedToCompagnie.php:26: $user->isAgentGare() => 'agent_gare',
+app\Filament\Concerns\ScopedToCompagnie.php:31: /** Cette ressource appartient-elle à un module (trait ConditionneParModule) ? */
+app\Filament\Concerns\ScopedToCompagnie.php:56: && Modules::visiblePour($user, static::moduleCle())
+app\Filament\Concerns\ScopedToCompagnie.php:60: public static function canViewAny(): bool { return static::peut('voir'); }
+app\Filament\Pages\AuditInterne.php:40: public static function canAccess(): bool
+app\Filament\Pages\Budget.php:44: public static function canAccess(): bool
+app\Filament\Pages\ChargesStructure.php:42: public static function canAccess(): bool
+app\Filament\Pages\ChargesStructure.php:89: $q = ChargeStructure::query()->visiblePour($u)->whereIn('compagnie_id', $compagnieIds)->with(['gare.ville', 'compagnie']);
+app\Filament\Pages\ChargesStructure.php:181: return ChargeStructure::query()->visiblePour(auth()->user())->where('compagnie_id', $this->cid())->find($id);
+app\Filament\Pages\ControleBillets.php:41: public static function canAccess(): bool
+app\Filament\Pages\ControleBillets.php:45: return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+app\Filament\Pages\ControleBillets.php:55: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ControleBillets.php:83: abort_unless($user->isAgentGare(), 403);
+app\Filament\Pages\ControleBillets.php:104: ->query(fn (): Builder => VerificationBillet::query()->visiblePour(auth()->user())->with(['billet', 'agent', 'gare']))
+app\Filament\Pages\ControleGestion.php:47: public static function canAccess(): bool
+app\Filament\Pages\ControleGestion.php:104: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ControleGestion.php:106: $charge = ChargeStructure::query()->visiblePour(auth()->user())->whereKey($id)->first();
+app\Filament\Pages\ControleGestion.php:216: ? ChargeStructure::query()->visiblePour($u)->where('compagnie_id', $cid)
+app\Filament\Pages\CycleFournisseurs.php:45: public static function canAccess(): bool
+app\Filament\Pages\Ecarts.php:41: public static function canAccess(): bool
+app\Filament\Pages\EtatsComptables.php:37: public static function canAccess(): bool
+app\Filament\Pages\EtatsComptables.php:41: return $u && Modules::visiblePour($u, 'comptabilite')
+app\Filament\Pages\EtatsComptables.php:42: && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()));
+app\Filament\Pages\EtatsComptables.php:146: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\GestionModules.php:25: public static function canAccess(): bool
+app\Filament\Pages\GestionModules.php:42: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\GestionModules.php:59: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\GrilleFrais.php:33: public static function canAccess(): bool
+app\Filament\Pages\ImmobilisationsComptables.php:41: public static function canAccess(): bool
+app\Filament\Pages\ImmobilisationsComptables.php:46: && Modules::visiblePour($utilisateur, 'comptabilite')
+app\Filament\Pages\ImmobilisationsComptables.php:48: || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId()));
+app\Filament\Pages\JournalParametres.php:29: public static function canAccess(): bool
+app\Filament\Pages\MaintenanceFlotte.php:34: public static function canAccess(): bool
+app\Filament\Pages\MaintenanceFlotte.php:39: && Modules::visiblePour($user, 'maintenance')
+app\Filament\Pages\MaintenanceFlotte.php:40: && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+app\Filament\Pages\MaintenanceFlotte.php:74: abort_unless($user instanceof User && static::canAccess(), 403);
+app\Filament\Pages\MaintenanceFlotte.php:87: ->visiblePour($user)
+app\Filament\Pages\MaintenanceFlotte.php:142: ->visiblePour($user)
+app\Filament\Pages\MaintenanceSysteme.php:30: public static function canAccess(): bool
+app\Filament\Pages\MaintenanceSysteme.php:115: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:134: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:146: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:156: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:188: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:200: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:268: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MaintenanceSysteme.php:298: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ManifesteGuichet.php:41: public static function canAccess(): bool
+app\Filament\Pages\ManifesteGuichet.php:59: $u->isAdminCompagnie() => $q->where('compagnie_id', $u->compagnieId() ?? 0)
+app\Filament\Pages\MarketingTableau.php:30: public static function canAccess(): bool
+app\Filament\Pages\MarketingTableau.php:42: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\MarketingTableau.php:56: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ModulesDesGares.php:26: public static function canAccess(): bool
+app\Filament\Pages\ModulesDesGares.php:30: return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie());
+app\Filament\Pages\ModulesDesGares.php:56: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ModulesDesGares.php:70: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ParametresCouts.php:40: public static function canAccess(): bool
+app\Filament\Pages\ParametresCouts.php:96: abort_unless(static::canAccess() && $this->cid() > 0, 403);
+app\Filament\Pages\Quotas.php:36: public static function canAccess(): bool
+app\Filament\Pages\Quotas.php:40: return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+app\Filament\Pages\Quotas.php:53: return $user->isSuperAdmin() || $user->isAdminCompagnie();
+app\Filament\Pages\Quotas.php:61: return $user->isSuperAdmin() || ($user->isAdminCompagnie() && ! $user->villeId());
+app\Filament\Pages\RapportGuichet.php:37: public static function canAccess(): bool
+app\Filament\Pages\RapportGuichet.php:68: ->visible(fn () => ! $u->isAgentGare()),
+app\Filament\Pages\RapportsFinanciers.php:40: public static function canAccess(): bool
+app\Filament\Pages\RentabiliteFlotte.php:41: public static function canAccess(): bool
+app\Filament\Pages\RentabiliteFlotte.php:116: ->visiblePour($u)
+app\Filament\Pages\RentabiliteFlotte.php:201: abort_unless(static::canAccess(), 403);
+app\Filament\Pages\ReportingMensuel.php:45: public static function canAccess(): bool
+app\Filament\Pages\ReportingMensuel.php:190: abort_unless(static::canAccess() && $this->cid() > 0, 403);
+app\Filament\Pages\ReportingMensuel.php:212: abort_unless(static::canAccess() && $this->cid() > 0, 403);
+app\Filament\Pages\SaisieEcriture.php:28: protected static bool $shouldRegisterNavigation = false;
+app\Filament\Pages\SaisieEcriture.php:54: public static function canAccess(): bool
+app\Filament\Pages\SaisieEcriture.php:65: || ($u->isAdminCompagnie() && ! $u->villeId())
+app\Filament\Pages\SaisieEcriture.php:122: ->visiblePour(auth()->user())
+app\Filament\Pages\SaisieEcriture.php:436: // abort_unless(static::canAccess(), 403);
+app\Filament\Pages\SaisieEcriture.php:479: ? CptEcriture::query()->visiblePour(auth()->user())->lockForUpdate()->findOrFail($this->ecritureId)
+app\Filament\Pages\SaisieEcriture.php:575: $e = CptEcriture::query()->visiblePour(auth()->user())->findOrFail($this->ecritureId);
+app\Filament\Pages\Transactions.php:45: public static function canAccess(): bool
+app\Filament\Pages\Transactions.php:73: if ($user->isAdminCompagnie()) {
+app\Filament\Pages\VenteGuichet.php:44: public static function canAccess(): bool
+app\Filament\Pages\VenteGuichet.php:88: ->default(fn () => auth()->user()->isAgentGare() ? auth()->user()->gareId() : null)
+app\Filament\Pages\VenteGuichet.php:89: ->disabled(fn () => auth()->user()->isAgentGare())->dehydrated(),
+app\Filament\Resources\Billets\BilletResource.php:79: ->visible(fn () => ! auth()->user()->isAgentGare()),
+app\Filament\Resources\Billets\BilletResource.php:151: ->visible(fn (Billet $record): bool => auth()->user()->isAgentGare() && $record->statut === BilletStatut::Valide)
+app\Filament\Resources\Billets\BilletResource.php:168: ->visible(fn (Billet $record): bool => auth()->user()->isAgentGare()
+app\Filament\Resources\Billets\Pages\DepartsDuJour.php:87: $user->isAdminCompagnie() => Gare::query()
+app\Filament\Resources\Billets\Pages\DepartsDuJour.php:90: $user->isAgentGare() => Gare::query()->whereKey($user->gareId() ?? 0),
+app\Filament\Resources\Billets\Pages\ListBillets.php:315: if (! auth()->user()->isAgentGare() || $this->tousLesBillets) {
+app\Filament\Resources\Billets\Pages\ListBillets.php:336: //     abort_unless($agent->isAgentGare() && $this->peutEmbarquer(), 403);
+app\Filament\Resources\Billets\Pages\ListBillets.php:381: abort_unless($agent->isAgentGare() && $this->peutEmbarquer(), 403);
+app\Filament\Resources\Billets\Pages\ListBillets.php:575: $user->isAdminCompagnie() => Gare::query()
+app\Filament\Resources\Billets\Pages\ListBillets.php:578: $user->isAgentGare() => Gare::query()->whereKey($user->gareId() ?? 0),
+app\Filament\Resources\Caisses\CaisseResource.php:35: public static function canViewAny(): bool
+app\Filament\Resources\Caisses\CaisseResource.php:57: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['user', 'gare.ville']);
+app\Filament\Resources\Chauffeurs\ChauffeurResource.php:47: public static function canViewAny(): bool
+app\Filament\Resources\Chauffeurs\ChauffeurResource.php:69: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['gare', 'vehiculeHabituel', 'compagnie']);
+app\Filament\Resources\Chauffeurs\ChauffeurResource.php:96: abort_if($u->isAdminCompagnie() && $u->villeId() && ! $u->garesGerables()->whereKey($gare->id)->exists(), 403);
+app\Filament\Resources\Chauffeurs\ChauffeurResource.php:98: abort_if($u->isAdminCompagnie() && $u->villeId(), 403);
+app\Filament\Resources\ClientsFideles\PreferenceClientResource.php:33: public static function canViewAny(): bool
+app\Filament\Resources\ColisCourriers\ColisResource.php:5: use App\Filament\Concerns\ConditionneParModule;
+app\Filament\Resources\ColisCourriers\ColisResource.php:37: use ConditionneParModule;
+app\Filament\Resources\ColisCourriers\ColisResource.php:60: public static function canViewAny(): bool
+app\Filament\Resources\ColisCourriers\ColisResource.php:64: return $u && static::moduleVisible() && ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare());
+app\Filament\Resources\ColisCourriers\ColisResource.php:69: return static::canViewAny();
+app\Filament\Resources\ColisCourriers\ColisResource.php:74: return static::canViewAny()
+app\Filament\Resources\ColisCourriers\ColisResource.php:87: ->visiblePour(auth()->user())
+app\Filament\Resources\ColisCourriers\ColisResource.php:104: $u->isAdminCompagnie() => $u->garesGerables(),
+app\Filament\Resources\ColisCourriers\ColisResource.php:134: } elseif ($u->isAgentGare()) {
+app\Filament\Resources\ColisCourriers\ColisResource.php:137: } elseif ($u->isAdminCompagnie()) {
+app\Filament\Resources\ColisCourriers\ColisResource.php:205: ->default(fn () => auth()->user()->isAgentGare() ? auth()->user()->gareId() : null)
+app\Filament\Resources\ColisCourriers\ColisResource.php:206: ->disabled(fn (string $operation) => $operation === 'edit' || auth()->user()->isAgentGare())
+app\Filament\Resources\ColisCourriers\ColisResource.php:370: $avecCode = $u->isSuperAdmin() || $u->isAdminCompagnie() || (int) $u->gareId() === (int) $record->gare_origine_id;
+app\Filament\Resources\ColisCourriers\ColisResource.php:484: ->visible(fn (Colis $r) => $u()->isSuperAdmin() || $u()->isAdminCompagnie() || (int) $u()->gareId() === (int) $r->gare_origine_id)
+app\Filament\Resources\Compagnies\CompagnieResource.php:145: return $user->isSuperAdmin() || ($user->isAdminCompagnie() && ! $user->villeId());
+app\Filament\Resources\Compagnies\Schemas\CompagnieForm.php:47: return $user->isSuperAdmin() || ($user->isAdminCompagnie() && ! $user->villeId());
+app\Filament\Resources\ComptesComptables\CompteComptableResource.php:47: return $u && Modules::visiblePour($u, 'comptabilite')
+app\Filament\Resources\ComptesComptables\CompteComptableResource.php:48: && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()));
+app\Filament\Resources\ComptesComptables\CompteComptableResource.php:51: public static function canViewAny(): bool
+app\Filament\Resources\CongesEmployes\CongeEmployeResource.php:46: public static function canViewAny(): bool
+app\Filament\Resources\CongesEmployes\CongeEmployeResource.php:53: return static::canViewAny();
+app\Filament\Resources\CongesEmployes\CongeEmployeResource.php:58: return $record->statut === 'demande' && static::canViewAny();
+app\Filament\Resources\CongesEmployes\CongeEmployeResource.php:68: return parent::getEloquentQuery()->visiblePour(auth()->user())->with('employe');
+app\Filament\Resources\DemandesAssistance\DemandeAssistanceResource.php:36: public static function canViewAny(): bool
+app\Filament\Resources\DemandesAssistance\DemandeAssistanceResource.php:40: return $u && ($u->isSuperAdmin() || $u->isServiceClient() || $u->isAdminCompagnie() || $u->isAgentGare());
+app\Filament\Resources\DemandesAssistance\DemandeAssistanceResource.php:61: ->visiblePour(auth()->user())
+app\Filament\Resources\DepensesVehicules\DepenseVehiculeResource.php:48: public static function canViewAny(): bool
+app\Filament\Resources\DepensesVehicules\DepenseVehiculeResource.php:55: return static::canViewAny();
+app\Filament\Resources\DepensesVehicules\DepenseVehiculeResource.php:70: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['vehicule', 'createur']);
+app\Filament\Resources\DepensesVehicules\DepenseVehiculeResource.php:77: return $u->isAgentGare()
+app\Filament\Resources\Ecritures\EcritureResource.php:49: return $u && Modules::visiblePour($u, 'comptabilite')
+app\Filament\Resources\Ecritures\EcritureResource.php:51: || ($u->isAdminCompagnie() && ! $u->villeId())
+app\Filament\Resources\Ecritures\EcritureResource.php:62: || ($u->isAdminCompagnie() && ! $u->villeId())
+app\Filament\Resources\Ecritures\EcritureResource.php:66: public static function canViewAny(): bool
+app\Filament\Resources\Ecritures\EcritureResource.php:95: ->visiblePour(auth()->user())
+app\Filament\Resources\Employes\EmployeResource.php:59: public static function canViewAny(): bool
+app\Filament\Resources\Employes\EmployeResource.php:81: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['gare.ville', 'contratActif']);
+app\Filament\Resources\Employes\EmployeResource.php:115: abort_if($u->isAdminCompagnie() && $u->villeId() && ! $u->garesGerables()->whereKey($gare->id)->exists(), 403);
+app\Filament\Resources\Employes\EmployeResource.php:116: } elseif ($u->isAdminCompagnie() && $u->villeId()) {
+app\Filament\Resources\Employes\RelationManagers\BulletinsPaieRelationManager.php:34: ->modifyQueryUsing(fn ($query) => $query->visiblePour(auth()->user())->with('periode'))
+app\Filament\Resources\FraisRegles\FraisRegleResource.php:47: public static function canViewAny(): bool
+app\Filament\Resources\FraisRegles\FraisRegleResource.php:54: return static::canViewAny();
+app\Filament\Resources\FraisRegles\FraisRegleResource.php:75: if (! $u->isAdminCompagnie() || (int) $regle->compagnie_id !== (int) $u->compagnieId()) {
+app\Filament\Resources\FraisRegles\FraisRegleResource.php:91: if ($u->isAdminCompagnie()) {
+app\Filament\Resources\FraisRegles\FraisRegleResource.php:131: abort_unless($u->isAdminCompagnie() && $u->compagnieId(), 403);
+app\Filament\Resources\MarketingCampagnes\MarketingCampagneResource.php:55: public static function canViewAny(): bool
+app\Filament\Resources\MarketingCampagnes\MarketingCampagneResource.php:62: return static::canViewAny();
+app\Filament\Resources\MarketingCampagnes\MarketingCampagneResource.php:67: return static::canViewAny() && $record->statut === 'brouillon';
+app\Filament\Resources\MarketingCampagnes\MarketingCampagneResource.php:72: return static::canViewAny() && in_array($record->statut, ['brouillon', 'annulee', 'erreur'], true);
+app\Filament\Resources\MarketingModeles\MarketingModeleResource.php:46: public static function canViewAny(): bool
+app\Filament\Resources\MarketingModeles\MarketingModeleResource.php:53: return static::canViewAny();
+app\Filament\Resources\MarketingModeles\MarketingModeleResource.php:58: return static::canViewAny() && $record->statut === 'brouillon';
+app\Filament\Resources\MarketingModeles\MarketingModeleResource.php:63: return static::canViewAny() && in_array($record->statut, ['brouillon', 'refuse'], true);
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:39: public static function canViewAny(): bool
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:61: return parent::getEloquentQuery()->visiblePour(auth()->user())->with('compagnie');
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:91: $somme = fn (string $col) => fn (PeriodePaie $r) => number_format((int) $r->bulletins()->visiblePour(auth()->user())->sum($col), 0, ',', ' ').' FCFA';
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:99: TextEntry::make('nb')->label('Bulletins')->state(fn (PeriodePaie $r) => $r->bulletins()->visiblePour(auth()->user())->count()),
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:124: ->getStateUsing(fn (PeriodePaie $r) => $r->bulletins()->visiblePour(auth()->user())->count())
+app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:127: ->getStateUsing(fn (PeriodePaie $r) => number_format((int) $r->bulletins()->visiblePour(auth()->user())->sum('net_a_payer'), 0, ',', ' ').' FCFA'),
+app\Filament\Resources\PeriodesPaie\RelationManagers\BulletinsRelationManager.php:47: ->modifyQueryUsing(fn ($query) => $query->visiblePour(auth()->user())->with('employe'))
+app\Filament\Resources\Presences\PresenceResource.php:47: public static function canViewAny(): bool
+app\Filament\Resources\Presences\PresenceResource.php:54: return static::canViewAny();
+app\Filament\Resources\Presences\PresenceResource.php:59: return static::canViewAny();
+app\Filament\Resources\Presences\PresenceResource.php:69: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['employe', 'gare.ville']);
+app\Filament\Resources\Presences\PresenceResource.php:74: $agent = auth()->user()->isAgentGare();
+app\Filament\Resources\Presences\Pages\ManagePresences.php:33: ->minDate($u->isAgentGare() ? today()->subDays(7) : null)->maxDate($u->isAgentGare() ? today() : null),
+app\Filament\Resources\Presences\Pages\ManagePresences.php:35: ->placeholder('Toutes mes gares')->visible(! $u->isAgentGare()),
+app\Filament\Resources\Presences\Pages\ManagePresences.php:40: $employes = Employe::query()->visiblePour(auth()->user())
+app\Filament\Resources\Users\UserResource.php:282: //     if ($authUser->isAdminCompagnie()) {
+app\Filament\Resources\Users\UserResource.php:306: if ($authUser->isAdminCompagnie()) {
+app\Filament\Resources\Users\UserResource.php:320: //     // if ($authUser->isAdminCompagnie()) {
+app\Filament\Resources\Users\UserResource.php:326: //     if ($authUser->isAdminCompagnie()) {
+app\Filament\Resources\Vehicules\VehiculeResource.php:53: public static function canViewAny(): bool
+app\Filament\Resources\Vehicules\VehiculeResource.php:94: return parent::getEloquentQuery()->visiblePour(auth()->user())->with(['gare', 'compagnie']);
+app\Filament\Resources\Vehicules\VehiculeResource.php:127: abort_if($u->isAdminCompagnie() && $u->villeId() && ! $u->garesGerables()->whereKey($gare->id)->exists(), 403);
+app\Filament\Resources\Vehicules\VehiculeResource.php:129: abort_if($u->isAdminCompagnie() && $u->villeId(), 403); // un admin de ville doit choisir une gare
+app\Filament\Resources\VentesGuichet\VenteResource.php:52: public static function canViewAny(): bool
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:54: public static function canViewAny(): bool
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:61: return static::canViewAny();
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:66: return static::canViewAny() && $record->statut === 'programme';
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:77: ->visiblePour(auth()->user())
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:94: $u->isAdminCompagnie() => $u->garesGerables(),
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:119: abort_if($u->isAgentGare() && $gareId !== (int) $u->gareId(), 403);
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:120: abort_if($u->isAdminCompagnie() && $u->villeId() && ! $u->garesGerables()->whereKey($gareId)->exists(), 403);
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:200: ->default(fn () => auth()->user()->isAgentGare() ? auth()->user()->gareId() : null)
+app\Filament\Resources\VoyagesCars\VoyageCarResource.php:201: ->disabled(fn () => auth()->user()->isAgentGare())
+app\Filament\Widgets\AlertesControle.php:19: return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie());
+app\Filament\Widgets\AlertesControle.php:24: $base = fn () => VerificationBillet::query()->visiblePour(auth()->user());
+app\Filament\Widgets\AssistanceOverview.php:18: return DemandeAssistanceResource::canViewAny();
+app\Filament\Widgets\AssistanceOverview.php:23: $base = fn () => DemandeAssistance::query()->visiblePour(auth()->user());
+app\Filament\Widgets\ColisBandeau.php:19: $base = fn () => Colis::query()->visiblePour($u);
+app\Filament\Widgets\GuichetStats.php:40: $ouvertes = Caisse::query()->visiblePour($u)->where('statut', 'ouverte')->count();
+app\Filament\Widgets\GuichetStats.php:41: $avalider = Caisse::query()->visiblePour($u)->where('statut', 'fermee')->count();
+app\Filament\Widgets\PersonnelStats.php:28: $effectif = Employe::query()->visiblePour($u)->where('statut', 'actif')->count();
+app\Filament\Widgets\PersonnelStats.php:30: $aujourdhui = Presence::query()->visiblePour($u)->whereDate('date', today());
+app\Filament\Widgets\PersonnelStats.php:42: $attente = CongeEmploye::query()->visiblePour($u)->where('statut', 'demande')->count();
+app\Filament\Widgets\PersonnelStats.php:44: ->whereDate('date_fin', '<=', $alerte)->whereHas('employe', fn ($q) => $q->visiblePour($u))->count();
+app\Filament\Widgets\PersonnelStats.php:46: ->whereHas('employe', fn ($q) => $q->visiblePour($u)->where('statut', '!=', 'sorti'))->count();
+app\Filament\Widgets\PersonnelStats.php:47: $sansContrat = Employe::query()->visiblePour($u)->where('statut', 'actif')->whereDoesntHave('contratActif')->count();
+app\Models\Billet.php:241: $user->isAdminCompagnie() => $query->whereHas('gare', function ($gare) use ($user, $villeId) {
+app\Models\Billet.php:248: $user->isAgentGare() => $query->where($query->getModel()->getTable().'.gare_id', $user->gareId() ?? 0),
+app\Models\Billet.php:270: BilletStatut::Utilise => $acteur->isAgentGare(),
+app\Models\Billet.php:271: BilletStatut::Annule => $acteur->isSuperAdmin() || $acteur->isAdminCompagnie()
+app\Models\Billet.php:272: || ($acteur->isAgentGare() && $billet->canal === 'guichet' && (int) $billet->vendu_par === (int) $acteur->id),
+app\Models\Billet.php:273: BilletStatut::Rembourse => $acteur->isSuperAdmin() || $acteur->isAdminCompagnie(),
+app\Models\Billet.php:275: BilletStatut::Valide => $acteur->isAgentGare() && $billet->statut === BilletStatut::Utilise,
+app\Models\BulletinPaie.php:37: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\BulletinPaie.php:43: if ($user->isAdminCompagnie()) {
+app\Models\BulletinPaie.php:47: $query->whereHas('employe', fn ($q) => $q->visiblePour($user));
+app\Models\Caisse.php:57: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Caisse.php:63: if ($user->isAdminCompagnie()) {
+app\Models\Caisse.php:69: if ($user->isAgentGare()) {
+app\Models\ChargeStructure.php:68: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\ChargeStructure.php:74: if ($user->isAdminCompagnie()) {
+app\Models\Chauffeur.php:53: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Chauffeur.php:59: if ($user->isAdminCompagnie()) {
+app\Models\Chauffeur.php:69: if ($user->isAgentGare()) {
+app\Models\Colis.php:110: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Colis.php:116: if ($user->isAdminCompagnie()) {
+app\Models\Colis.php:127: if ($user->isAgentGare()) {
+app\Models\Colis.php:143: if ($acteur->isSuperAdmin() || $acteur->isAdminCompagnie()) {
+app\Models\Colis.php:147: if (! $acteur->isAgentGare()) {
+app\Models\Colis.php:172: if (! static::query()->visiblePour($acteur)->whereKey($colis->id)->exists()) {
+app\Models\CongeEmploye.php:58: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\CongeEmploye.php:60: return $query->whereHas('employe', fn ($q) => $q->visiblePour($user));
+app\Models\CptEcriture.php:65: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\CptEcriture.php:71: if ($user->isAdminCompagnie() && ! $user->villeId()) {
+app\Models\CptEcriture.php:95: if (! static::query()->visiblePour($acteur)->whereKey($e->id)->exists()) {
+app\Models\CptEcriture.php:152: if ($acteur && ! static::query()->visiblePour($acteur)->whereKey($e->id)->exists()) {
+app\Models\CptEcriture.php:187: if (! static::query()->visiblePour($acteur)->whereKey($o->id)->exists()) {
+app\Models\DemandeAssistance.php:75: // public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\DemandeAssistance.php:81: //     if ($user->isAdminCompagnie()) {
+app\Models\DemandeAssistance.php:91: //     if ($user->isAgentGare()) {
+app\Models\DemandeAssistance.php:105: //     return $user->isAgentGare() && $this->gare_id !== null && $this->gare_id === $user->gareId();
+app\Models\DemandeAssistance.php:113: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\DemandeAssistance.php:119: if ($user->isAdminCompagnie()) {
+app\Models\DemandeAssistance.php:129: if ($user->isAgentGare() || $user->isServiceClient()) {
+app\Models\DemandeAssistance.php:143: return ($user->isAgentGare() || $user->isServiceClient())
+app\Models\DepenseVehicule.php:82: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\DepenseVehicule.php:85: ->whereIn('vehicule_id', Vehicule::query()->visiblePour($user)->select('vehicules.id'))
+app\Models\Employe.php:137: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Employe.php:143: if ($user->isAdminCompagnie()) {
+app\Models\Employe.php:153: if ($user->isAgentGare()) {
+app\Models\Employe.php:163: return static::query()->visiblePour($user)
+app\Models\Employe.php:173: ->whereIn('id', static::query()->visiblePour($user)->whereNotNull('gare_id')->select('gare_id'))
+app\Models\MouvementCaisse.php:39: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\MouvementCaisse.php:45: if ($user->isAdminCompagnie()) {
+app\Models\MouvementCaisse.php:51: if ($user->isAgentGare()) {
+app\Models\PeriodePaie.php:57: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\PeriodePaie.php:63: if ($user->isAdminCompagnie()) {
+app\Models\Presence.php:56: if ($u && $u->isAgentGare()) {
+app\Models\Presence.php:91: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Presence.php:97: if ($user->isAdminCompagnie()) {
+app\Models\Presence.php:107: if ($user->isAgentGare()) {
+app\Models\User.php:80: public function canAccessPanel(Panel $panel): bool
+app\Models\User.php:87: // return $this->isSuperAdmin() || $this->isAdminCompagnie() || $this->isAgentGare();
+app\Models\User.php:88: // return $this->isSuperAdmin() || $this->isAdminCompagnie() || $this->isAgentGare() || $this->isServiceClient();
+app\Models\User.php:90: // return $this->isSuperAdmin() || $this->isAdminCompagnie() || $this->isAgentGare() || $this->isServiceClient();
+app\Models\User.php:120: || $this->isAdminCompagnie()
+app\Models\Vehicule.php:67: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\Vehicule.php:73: if ($user->isAdminCompagnie()) {
+app\Models\Vehicule.php:83: if ($user->isAgentGare()) {
+app\Models\VerificationBillet.php:33: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\VerificationBillet.php:39: if ($user->isAdminCompagnie()) {
+app\Models\VerificationBillet.php:43: if ($user->isAgentGare()) {
+app\Models\VoyageCar.php:66: public function scopeVisiblePour(Builder $query, User $user): Builder
+app\Models\VoyageCar.php:72: if ($user->isAdminCompagnie()) {
+app\Models\VoyageCar.php:82: if ($user->isAgentGare()) {
+app\Models\VoyageCar.php:124: if (! static::query()->visiblePour($acteur)->whereKey($v->id)->exists()) {
+app\Models\VoyageCar.php:187: if (! static::query()->visiblePour($acteur)->whereKey($v->id)->exists()) {
+app\Models\Concerns\ConditionneParModule.php:7: trait ConditionneParModule
+app\Models\Concerns\ConditionneParModule.php:12: public static function moduleVisible(): bool
+app\Models\Concerns\ConditionneParModule.php:14: return Modules::visiblePour(auth()->user(), static::moduleCle());
+app\Models\Concerns\HasCompagnieRoles.php:75: public function isAdminCompagnie(): bool
+app\Models\Concerns\HasCompagnieRoles.php:80: public function isAgentGare(): bool
+app\Models\Concerns\HasCompagnieRoles.php:128: if ($this->isAdminCompagnie()) {
+app\Models\Concerns\HasCompagnieRoles.php:177: if ($this->isAdminCompagnie()) {

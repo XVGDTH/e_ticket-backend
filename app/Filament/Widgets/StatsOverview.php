@@ -31,7 +31,6 @@ class StatsOverview extends BaseWidget
 
         $panier = fn ($a) => $a->billets > 0 ? $a->ca / $a->billets : 0;
 
-        $places = (int) config('analytics.places_par_depart', 60);
         $remplissage = $analytics->remplissage(now()->subDays(30)->startOfDay(), now()->subDay()->endOfDay());
         $taux = $remplissage['taux'];
 
@@ -41,9 +40,10 @@ class StatsOverview extends BaseWidget
             $this->stat('Voyageurs (30 j)', (float) $actuel->voyageurs, (float) $precedent->voyageurs),
             $this->stat('Panier moyen', (float) $panier($actuel), (float) $panier($precedent), ' FCFA'),
             $this->stat('Taxes collectées (30 j)', (float) $actuel->taxes, (float) $precedent->taxes, ' FCFA'),
-            Stat::make('Remplissage réel (30 j)', $taux === null ? '—' : number_format($taux, 1, ',', ' ') . ' %')
+            Stat::make('Remplissage du quota application (30 j)', $taux === null ? '—' : number_format($taux, 1, ',', ' ').' %')
                 ->description(
-                    number_format($remplissage['voyageurs'], 0, ',', ' ') . " voyageurs sur {$remplissage['departs']} départs ({$places} places chacun)"
+                    number_format($remplissage['voyageurs'], 0, ',', ' ').' voyageurs pour '
+                    .number_format($remplissage['capacite'], 0, ',', ' ')." places de l'application, sur {$remplissage['departs']} départs"
                 )
                 ->color(match (true) {
                     $taux === null, $remplissage['voyageurs'] === 0 => 'gray',
@@ -62,27 +62,22 @@ class StatsOverview extends BaseWidget
 
     private function stat(string $label, float $actuel, float $precedent, string $suffixe = ''): Stat
     {
-        $stat = Stat::make($label, number_format($actuel, 0, ',', ' ') . $suffixe);
+        $stat = Stat::make($label, number_format($actuel, 0, ',', ' ').$suffixe);
         $variation = VentesAnalytics::variation($actuel, $precedent);
 
         if ($variation === null) {
             return $stat->description('Pas de période précédente');
         }
 
-        // return $stat
-        //     ->description(($variation >= 0 ? '+' : '') . number_format($variation, 1, ',', ' ') . ' % vs 30 j précédents')
-        //     ->descriptionIcon($variation >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-        //     // ->color($variation >= 0 ? 'success' : 'danger');
-        //     ->color($variation >= 0 ? 'primary' : 'danger');
         [$couleur, $icone] = match (true) {
-    abs($variation) < 1 => ['warning', 'heroicon-m-arrow-right'],
-    $variation > 0      => ['success', 'heroicon-m-arrow-trending-up'],
-    default             => ['danger', 'heroicon-m-arrow-trending-down'],
-};
+            abs($variation) < 1 => ['warning', 'heroicon-m-arrow-right'],
+            $variation > 0 => ['success', 'heroicon-m-arrow-trending-up'],
+            default => ['danger', 'heroicon-m-arrow-trending-down'],
+        };
 
-return $stat
-    ->description(($variation >= 0 ? '+' : '') . number_format($variation, 1, ',', ' ') . ' % vs 30 j précédents')
-    ->descriptionIcon($icone)
-    ->color($couleur);
+        return $stat
+            ->description(($variation >= 0 ? '+' : '').number_format($variation, 1, ',', ' ').' % vs 30 j précédents')
+            ->descriptionIcon($icone)
+            ->color($couleur);
     }
 }
