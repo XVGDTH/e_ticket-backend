@@ -71,7 +71,7 @@ class ChargeStructure extends Model
             return $query;
         }
 
-        if ($user->isAdminCompagnie()) {
+        if ($user->isAdminCompagnie() || $user->roleDonneAccesAuModule('controle_gestion')) {
             $query->where('compagnie_id', $user->compagnieId() ?? 0);
 
             return $user->villeId()

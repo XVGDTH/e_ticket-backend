@@ -37,7 +37,7 @@ class MaintenanceFlotte extends Page
 
         return $user instanceof User
             && Modules::visiblePour($user, 'maintenance')
-            && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+            && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare() || $user->roleDonneAccesAuModule('maintenance'));
     }
 
     public function getTitle(): string

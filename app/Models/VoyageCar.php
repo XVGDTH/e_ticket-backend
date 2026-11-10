@@ -69,7 +69,7 @@ class VoyageCar extends Model
             return $query;
         }
 
-        if ($user->isAdminCompagnie()) {
+        if ($user->isAdminCompagnie() || $user->roleDonneAccesAuModule('flotte')) {
             $query->where('compagnie_id', $user->compagnieId() ?? 0);
 
             if ($user->villeId()) {

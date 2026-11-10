@@ -42,7 +42,7 @@ class MouvementCaisse extends Model
             return $query;
         }
 
-        if ($user->isAdminCompagnie()) {
+        if ($user->isAdminCompagnie() || $user->roleDonneAccesAuModule('caisse')) {
             $query->where('compagnie_id', $user->compagnieId() ?? 0);
 
             return $user->villeId() ? $query->whereIn('gare_id', $user->garesGerables()->select('gares.id')) : $query;

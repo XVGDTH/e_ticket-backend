@@ -39,7 +39,7 @@ class EtatsComptables extends Page
         $u = auth()->user();
 
         return $u && Modules::visiblePour($u, 'comptabilite')
-            && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()));
+            && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()) || $u->roleDonneAccesAuModule('comptabilite'));
     }
 
     public function getTitle(): string

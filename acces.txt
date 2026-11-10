@@ -1,0 +1,720 @@
+﻿=== app\Filament\Concerns\ScopedToCompagnie.php:60
+    public static function canViewAny(): bool { return static::peut('voir'); }
+    public static function canCreate(): bool { return static::peut('creer'); }
+    public static function canEdit(Model $record): bool { return static::peut('modifier'); }
+    public static function canDelete(Model $record): bool { return static::peut('supprimer'); }
+    public static function canDeleteAny(): bool { return static::peut('supprimer'); }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+        $role = static::roleStaff();
+
+        if ($role === 'super_admin') {
+            return $query;
+
+=== app\Filament\Pages\AuditInterne.php:40
+    public static function canAccess(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'ContrÃ´le interne et audit';
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Planifiez les contrÃ´les et assurez le suivi des recommandations de votre compagnie.';
+    }
+
+=== app\Filament\Pages\Budget.php:44
+    public static function canAccess(): bool
+    {
+        return Acces::finance(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Construit Ã  partir du plan de transport, mensualisÃ©, avec des versions datÃ©es';
+    }
+
+    public function mount(): void
+    {
+        $this->initCompagnie();
+        $this->annee = (string) today()->year;
+
+=== app\Filament\Pages\ChargesStructure.php:42
+    public static function canAccess(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Loyers, salaires dâ€™agence, frais de siÃ¨ge et dâ€™atelier, rÃ©partis ensuite sur les dÃ©parts';
+    }
+
+    public function mount(): void
+    {
+        $this->compagnieId = auth()->user()->isSuperAdmin()
+            ? ''
+
+=== app\Filament\Pages\ControleBillets.php:41
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+    }
+
+    public function getTitle(): string
+    {
+        return 'ContrÃ´le des billets';
+    }
+
+    public function verifier(string $contenu): void
+    {
+
+=== app\Filament\Pages\ControleGestion.php:47
+    public static function canAccess(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'RentabilitÃ© par dÃ©part, car, ligne, gare et activitÃ©';
+    }
+
+    public function mount(): void
+    {
+        if (auth()->user()->isSuperAdmin()) {
+            $this->compagnieId = '';
+
+=== app\Filament\Pages\CycleFournisseurs.php:45
+    public static function canAccess(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Cycle fournisseurs';
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Suivez les tiers, les rÃ©ceptions, les factures et les paiements avec validation sÃ©parÃ©e.';
+    }
+
+=== app\Filament\Pages\Ecarts.php:41
+    public static function canAccess(): bool
+    {
+        return Acces::finance(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Effets prix, volume et composition par ligne, avec commentaire du responsable au-delÃ  du seuil';
+    }
+
+    public function mount(): void
+    {
+        $this->initCompagnie();
+
+
+=== app\Filament\Pages\EtatsComptables.php:37
+    public static function canAccess(): bool
+    {
+        $u = auth()->user();
+
+        return $u && Modules::visiblePour($u, 'comptabilite')
+            && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()));
+    }
+
+    public function getTitle(): string
+    {
+        return 'Ã‰tats financiers';
+    }
+
+    public function mount(): void
+
+=== app\Filament\Pages\GestionModules.php:25
+    public static function canAccess(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public function getTitle(): string
+    {
+        return 'Modules des compagnies';
+    }
+
+    public function mount(): void
+    {
+        $this->compagnieId = (string) (Compagnie::orderBy('nom')->value('id') ?? '');
+    }
+
+=== app\Filament\Pages\GrilleFrais.php:33
+    public static function canAccess(): bool
+    {
+        return RapportFinancier::autorise(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Grille des frais';
+    }
+
+    public function mount(): void
+    {
+        $user = auth()->user();
+
+
+=== app\Filament\Pages\ImmobilisationsComptables.php:41
+    public static function canAccess(): bool
+    {
+        $utilisateur = auth()->user();
+
+        return $utilisateur
+            && Modules::visiblePour($utilisateur, 'comptabilite')
+            && ($utilisateur->isSuperAdmin()
+                || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId()));
+    }
+
+    public function mount(): void
+    {
+        $utilisateur = auth()->user();
+
+
+=== app\Filament\Pages\JournalParametres.php:29
+    public static function canAccess(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Journal des paramÃ¨tres';
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'Historique en lecture seule des changements de tarifs, quotas, seuils, rÃ©partitions et droits.';
+    }
+
+=== app\Filament\Pages\MaintenanceFlotte.php:34
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user instanceof User
+            && Modules::visiblePour($user, 'maintenance')
+            && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Maintenance et carburant';
+    }
+
+
+=== app\Filament\Pages\MaintenanceSysteme.php:30
+    public static function canAccess(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public function getTitle(): string
+    {
+        return 'Maintenance systÃ¨me';
+    }
+
+    public function getSubheading(): string
+    {
+        return 'Surveillez les composants essentiels et lancez uniquement des opÃ©rations de maintenance contrÃ´lÃ©es.';
+    }
+
+=== app\Filament\Pages\ManifesteGuichet.php:41
+    public static function canAccess(): bool
+    {
+        return AccesGuichet::visible(auth()->user());
+    }
+
+    public function mount(): void
+    {
+        $this->form->fill(['date' => today()->toDateString()]);
+    }
+
+    private function getRoutes(): array
+    {
+        $u = auth()->user();
+
+
+=== app\Filament\Pages\MarketingTableau.php:30
+    public static function canAccess(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public function getTitle(): string
+    {
+        return 'Marketing WhatsApp';
+    }
+
+    public function verifierConnexion(): void
+    {
+        abort_unless(static::canAccess(), 403);
+
+
+=== app\Filament\Pages\ModulesDesGares.php:26
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Modules par gare';
+    }
+
+    public function mount(): void
+    {
+
+=== app\Filament\Pages\ParametresCouts.php:40
+    public static function canAccess(): bool
+    {
+        return Acces::finance(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'CoÃ»ts standards et seuils utilisÃ©s par le contrÃ´le de gestion';
+    }
+
+    public function mount(): void
+    {
+        $u = auth()->user();
+
+
+=== app\Filament\Pages\Quotas.php:36
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && ($user->isSuperAdmin() || $user->isAdminCompagnie() || $user->isAgentGare());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Quotas et places';
+    }
+
+    /** Quota d'une gare : super admin et admin de compagnie (dans leur pÃ©rimÃ¨tre). */
+    protected function peutModifier(): bool
+
+=== app\Filament\Pages\RapportGuichet.php:37
+    public static function canAccess(): bool
+    {
+        return AccesGuichet::visible(auth()->user());
+    }
+
+    public function mount(): void
+    {
+        $this->form->fill(['du' => today()->startOfMonth()->toDateString(), 'au' => today()->toDateString()]);
+    }
+
+    private function periode(): array
+    {
+        $d = $this->data;
+
+
+=== app\Filament\Pages\RapportsFinanciers.php:40
+    public static function canAccess(): bool
+    {
+        return RapportFinancier::autorise(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Rapports financiers';
+    }
+
+    public function updatedCompagnieId(): void
+    {
+        $this->gareId = '';
+    }
+
+=== app\Filament\Pages\RentabiliteFlotte.php:41
+    public static function canAccess(): bool
+    {
+        return Acces::finance(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'RentabilitÃ© des cars';
+    }
+
+    public function mount(): void
+    {
+        $u = auth()->user();
+
+
+=== app\Filament\Pages\ReportingMensuel.php:45
+    public static function canAccess(): bool
+    {
+        return Acces::finance(auth()->user());
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return 'ClÃ´ture du mois : chiffres arrÃªtÃ©s, commentaires figÃ©s, exports PDF et Excel';
+    }
+
+    public function mount(): void
+    {
+        $this->initCompagnie();
+
+
+=== app\Filament\Pages\SaisieEcriture.php:54
+    public static function canAccess(): bool
+    {
+        return EcritureResource::autorise();
+    }
+
+        public static function peutEcrire(): bool
+    {
+        $u = auth()->user();
+
+        return static::autorise()
+            && ($u->isSuperAdmin()
+                || ($u->isAdminCompagnie() && ! $u->villeId())
+                || in_array('modifier', $u->droitsMetierPourModule('comptabilite'), true));
+    }
+
+=== app\Filament\Pages\Transactions.php:45
+    public static function canAccess(): bool
+    {
+        return RapportFinancier::autorise(auth()->user());
+    }
+
+    public function getTitle(): string
+    {
+        return 'Transactions';
+    }
+
+    private static function villes(): array
+    {
+        return self::$villes ??= Ville::pluck('nom', 'id')->all();
+    }
+
+=== app\Filament\Pages\VenteGuichet.php:44
+    public static function canAccess(): bool
+    {
+        return AccesGuichet::visible(auth()->user());
+    }
+
+    public function mount(): void
+    {
+        $this->form->fill($this->valeursInitiales());
+    }
+
+    private function valeursInitiales(array $garder = []): array
+    {
+        return array_merge([
+            'date_voyage' => today()->toDateString(), 'mode' => 'especes', 'remise' => 0,
+
+=== app\Filament\Resources\Caisses\CaisseResource.php:35
+    public static function canViewAny(): bool
+    {
+        return AccesGuichet::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return false; // une caisse s'ouvre depuis Â« Vendre un billet Â»
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+=== app\Filament\Resources\Chauffeurs\ChauffeurResource.php:47
+    public static function canViewAny(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return Acces::gerant(auth()->user());
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Acces::gerant(auth()->user());
+    }
+
+=== app\Filament\Resources\ClientsFideles\PreferenceClientResource.php:33
+    public static function canViewAny(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+=== app\Filament\Resources\ColisCourriers\ColisResource.php:60
+    public static function canViewAny(): bool
+    {
+        $u = auth()->user();
+
+        return $u && static::moduleVisible() && ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+
+=== app\Filament\Resources\ComptesComptables\CompteComptableResource.php:51
+    public static function canViewAny(): bool
+    {
+        return static::autorise();
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::autorise();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $u = auth()->user();
+
+
+=== app\Filament\Resources\CongesEmployes\CongeEmployeResource.php:46
+    public static function canViewAny(): bool
+    {
+        return AccesPersonnel::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return $record->statut === 'demande' && static::canViewAny();
+    }
+
+=== app\Filament\Resources\DemandesAssistance\DemandeAssistanceResource.php:36
+    public static function canViewAny(): bool
+    {
+        $u = auth()->user();
+
+        return $u && ($u->isSuperAdmin() || $u->isServiceClient() || $u->isAdminCompagnie() || $u->isAgentGare());
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+
+=== app\Filament\Resources\DepensesVehicules\DepenseVehiculeResource.php:48
+    public static function canViewAny(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Acces::gerant(auth()->user());
+    }
+
+=== app\Filament\Resources\Ecritures\EcritureResource.php:66
+    public static function canViewAny(): bool
+    {
+        return static::autorise();
+    }
+
+    public static function canCreate(): bool
+    {
+        return false; // la crÃ©ation passe par la page de saisie
+    }
+
+    /** Modifiable tant qu'elle est manuelle, en brouillon et qu'aucune ligne n'a Ã©tÃ© validÃ©e. */
+    public static function canEdit(Model $record): bool
+    {
+        $validees = $record->lignes_validees_count ?? $record->lignes()->whereNotNull('valide_le')->count();
+
+=== app\Filament\Resources\Employes\EmployeResource.php:59
+    public static function canViewAny(): bool
+    {
+        return AccesPersonnel::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return AccesPersonnel::gerant(auth()->user());
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return AccesPersonnel::gerant(auth()->user());
+    }
+
+=== app\Filament\Resources\FraisRegles\FraisRegleResource.php:47
+    public static function canViewAny(): bool
+    {
+        return RapportFinancier::autorise(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::autorisePour($record);
+    }
+
+=== app\Filament\Resources\MarketingCampagnes\MarketingCampagneResource.php:55
+    public static function canViewAny(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canViewAny() && $record->statut === 'brouillon';
+    }
+
+=== app\Filament\Resources\MarketingModeles\MarketingModeleResource.php:46
+    public static function canViewAny(): bool
+    {
+        return (bool) auth()->user()?->isSuperAdmin();
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canViewAny() && $record->statut === 'brouillon';
+    }
+
+=== app\Filament\Resources\PeriodesPaie\PeriodePaieResource.php:39
+    public static function canViewAny(): bool
+    {
+        return AccesPersonnel::paie(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return AccesPersonnel::paieGestion(auth()->user());
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+=== app\Filament\Resources\Presences\PresenceResource.php:47
+    public static function canViewAny(): bool
+    {
+        return AccesPersonnel::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canViewAny();
+    }
+
+=== app\Filament\Resources\Vehicules\VehiculeResource.php:53
+    public static function canViewAny(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return Acces::gerant(auth()->user());
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Acces::gerant(auth()->user());
+    }
+
+=== app\Filament\Resources\VentesGuichet\VenteResource.php:52
+    public static function canViewAny(): bool
+    {
+        return AccesGuichet::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+=== app\Filament\Resources\VoyagesCars\VoyageCarResource.php:54
+    public static function canViewAny(): bool
+    {
+        return Acces::visible(auth()->user());
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canViewAny();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canViewAny() && $record->statut === 'programme';
+    }
+

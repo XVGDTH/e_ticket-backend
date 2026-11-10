@@ -140,7 +140,7 @@ class Employe extends Model
             return $query;
         }
 
-        if ($user->isAdminCompagnie()) {
+        if ($user->isAdminCompagnie() || $user->roleDonneAccesAuModule('personnel')) {
             $query->where('compagnie_id', $user->compagnieId() ?? 0);
 
             if ($user->villeId()) {

@@ -60,7 +60,7 @@ class PeriodePaie extends Model
             return $query;
         }
 
-        if ($user->isAdminCompagnie()) {
+        if ($user->isAdminCompagnie() || $user->roleDonneAccesAuModule('personnel')) {
             return $query->where('compagnie_id', $user->compagnieId() ?? 0);
         }
 

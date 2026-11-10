@@ -45,7 +45,8 @@ class ImmobilisationsComptables extends Page
         return $utilisateur
             && Modules::visiblePour($utilisateur, 'comptabilite')
             && ($utilisateur->isSuperAdmin()
-                || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId()));
+                || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId())
+                || in_array('modifier', $utilisateur->droitsMetierPourModule('comptabilite'), true));
     }
 
     public function mount(): void

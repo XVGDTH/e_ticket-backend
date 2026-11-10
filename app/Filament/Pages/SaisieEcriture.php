@@ -56,15 +56,15 @@ class SaisieEcriture extends Page
         return EcritureResource::autorise();
     }
 
-        public static function peutEcrire(): bool
-    {
-        $u = auth()->user();
+    //     public static function peutEcrire(): bool
+    // {
+    //     $u = auth()->user();
 
-        return static::autorise()
-            && ($u->isSuperAdmin()
-                || ($u->isAdminCompagnie() && ! $u->villeId())
-                || in_array('modifier', $u->droitsMetierPourModule('comptabilite'), true));
-    }
+    //     return static::autorise()
+    //         && ($u->isSuperAdmin()
+    //             || ($u->isAdminCompagnie() && ! $u->villeId())
+    //             || in_array('modifier', $u->droitsMetierPourModule('comptabilite'), true));
+    // }
     
 
     public function getTitle(): string

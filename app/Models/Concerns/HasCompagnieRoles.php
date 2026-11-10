@@ -135,6 +135,11 @@ trait HasCompagnieRoles
             return $gares;
         }
 
+                // Rôles métiers : toutes les gares de leur compagnie.
+        if ($this->compagnieId() && $this->liensStaff()->contains(fn ($l) => isset(config('modules.roles', [])[$l->role?->name]))) {
+            return $gares->where('compagnie_id', $this->compagnieId());
+        }
+
         return $gares->whereRaw('1 = 0');
     }
 
