@@ -207,7 +207,7 @@ trait HasCompagnieRoles
             $def = config('modules.roles.'.$lien->role?->name, []);
             $droits = array_merge(
                 $droits,
-                ($def['lecture_seule'] ?? false) ? ['voir'] : ($def['droits'] ?? ['voir', 'creer', 'modifier', 'supprimer'])
+                (($def['lecture_seule'] ?? false) && ! in_array($module, $def['ecriture_modules'] ?? [], true)) ? ['voir'] : ($def['droits'] ?? ['voir', 'creer', 'modifier', 'supprimer'])
             );
         }
 

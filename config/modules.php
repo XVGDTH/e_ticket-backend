@@ -91,11 +91,15 @@ return [
         'comptable' => ['label' => 'Comptable', 'modules' => ['comptabilite']],
         'flotte' => ['label' => 'Flotte', 'modules' => ['flotte', 'maintenance']],
         'controleur_gestion' => ['label' => 'Contrôleur de gestion', 'modules' => ['controle_gestion']],
+
         'auditeur_interne' => [
             'label' => 'Auditeur interne',
-            'modules' => ['audit_interne'],
+            'modules' => ['audit_interne', 'comptabilite', 'caisse', 'personnel', 'flotte', 'maintenance', 'controle_gestion'],
             'lecture_seule' => true,
+            'ecriture_modules' => ['audit_interne'],
             'incompatibles' => ['caisse', 'comptable'],
         ],
+        
+
     ],
 ];

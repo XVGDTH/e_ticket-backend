@@ -40,7 +40,7 @@ class RapportFinancier
     /** Super admin et admin de compagnie uniquement. */
     public static function autorise(?User $user): bool
     {
-        return $user !== null && ($user->isSuperAdmin() || $user->isAdminCompagnie());
+        return $user !== null && ($user->isSuperAdmin() || $user->isAdminCompagnie() || ($user->roleDonneAccesAuModule('comptabilite') && \App\Services\Modules::visiblePour($user, 'comptabilite')));
     }
 
     /** @return array{0: Carbon, 1: Carbon} */
@@ -116,7 +116,7 @@ class RapportFinancier
             return $q;
         }
 
-        if ($this->user->isAdminCompagnie()) {
+        if ($this->user->isAdminCompagnie() || $this->user->roleDonneAccesAuModule('comptabilite')) {
             $q->where('r.compagnie_id', $this->user->compagnieId() ?? 0);
 
             if ($villeId = $this->user->villeId()) {

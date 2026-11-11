@@ -10,10 +10,19 @@ class AccesGuichet
     /**
      * Peut utiliser le module. Si « guichet » n'est pas déclaré dans config/modules.php,
      * le module n'est pas restreint ; une fois déclaré, il suit l'activation par compagnie et par gare.
+     * Le rôle « caisse » accède aux caisses de toute sa compagnie.
      */
     public static function visible(?User $u): bool
     {
-        if (! $u || ! ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare())) {
+        if (! $u) {
+            return false;
+        }
+
+        if ($u->roleDonneAccesAuModule('caisse') && Modules::visiblePour($u, 'caisse')) {
+            return true;
+        }
+
+        if (! ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare())) {
             return false;
         }
 

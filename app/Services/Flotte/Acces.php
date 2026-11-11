@@ -12,20 +12,25 @@ class Acces
     {
         return $u
             && Modules::visiblePour($u, 'flotte')
-            && ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare());
+            && ($u->isSuperAdmin() || $u->isAdminCompagnie() || $u->isAgentGare() || $u->roleDonneAccesAuModule('flotte'));
     }
 
     /** Peut créer et modifier cars et chauffeurs. */
     public static function gerant(?User $u): bool
     {
-        return $u && static::visible($u) && ($u->isSuperAdmin() || $u->isAdminCompagnie());
+        return $u && static::visible($u)
+            && ($u->isSuperAdmin()
+                || $u->isAdminCompagnie()
+                || in_array('modifier', $u->droitsMetierPourModule('flotte'), true));
     }
 
-    /** Voit les prix d'achat, les salaires et la rentabilité : super admin, ou admin de compagnie non limité à une ville. */
+    /** Voit les prix d'achat, les salaires et la rentabilité. */
     public static function finance(?User $u): bool
     {
         return $u
             && Modules::visiblePour($u, 'flotte')
-            && ($u->isSuperAdmin() || ($u->isAdminCompagnie() && ! $u->villeId()));
+            && ($u->isSuperAdmin()
+                || ($u->isAdminCompagnie() && ! $u->villeId())
+                || in_array('modifier', $u->droitsMetierPourModule('flotte'), true));
     }
 }

@@ -12,6 +12,7 @@ class Acces
         return $utilisateur
             && Modules::visiblePour($utilisateur, 'audit_interne')
             && ($utilisateur->isSuperAdmin()
-                || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId()));
+                || ($utilisateur->isAdminCompagnie() && ! $utilisateur->villeId())
+                || $utilisateur->roleDonneAccesAuModule('audit_interne'));
     }
 }
